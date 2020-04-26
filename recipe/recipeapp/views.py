@@ -9,5 +9,11 @@ class TagViewSet(viewsets.GenericViewSet,mixins.ListModelMixin):
     '''Manage the databases'''
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+    '''Thi is the object to be rendered by the api'''
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
+
+    def get_queryset(self):
+        '''Here is the custom filtering should be implemented'''
+        '''get objects for the the currently auth user only'''
+        return self.queryset.filter(user=self.request.user)
