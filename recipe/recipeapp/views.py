@@ -24,7 +24,7 @@ class TagViewSet(viewsets.GenericViewSet,
         '''Create a new tag'''
         serializer.save(user=self.request.user)
     
-class IngedrientViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+class IngedrientViewSet(viewsets.GenericViewSet, mixins.ListModelMixin,mixins.CreateModelMixin):
     '''Manage indegridents in the db'''
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
@@ -33,4 +33,3 @@ class IngedrientViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user).order_by('-name')
-        
