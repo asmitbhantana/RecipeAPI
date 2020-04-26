@@ -10,9 +10,26 @@ class UserSerializer(serializers.ModelSerializer):
         '''Setting extra arguments for field variable'''
         extra_kwargs = {'password':{'write_only':True,'min_length':5}}
 
+
     def create(self,validated_data):
         '''Create new user with encrypted data and returns it'''
         return get_user_model().objects.create_user(**validated_data)
+
+    def update(self,instance,validated_data):
+        '''Update the user credentials
+            Steps: `Remove password using pop
+                    `call super for using default one along with the one we created
+                    `set password of user
+                    `sava the user
+        '''
+        password = validated_data.pop('password',None)
+        user = super().update(instance,validated_data)
+
+        if password:
+            user.set_password(password)
+            user.save()
+        return user
+        
 
 class AuthTokenSerializer(serializers.Serializer):
     '''Serializer for user auth object'''
@@ -28,7 +45,7 @@ class AuthTokenSerializer(serializers.Serializer):
         password = attrs.get('password')
         user = authenticate(
             request=self.context.get('request'),
-            userName = email,
+            username = email,
             password=password
         )
         if not user:
