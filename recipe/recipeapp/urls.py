@@ -5,7 +5,7 @@ from recipeapp import views
 '''Automatically register default urls'''
 router = DefaultRouter()
 router.register('tags',views.TagViewSet)
-router.register('ingredients',views.IngedrientViewSet)
+router.register('ingredients',views.IngredientViewSet)
 
 app_name ='recipe'
 
