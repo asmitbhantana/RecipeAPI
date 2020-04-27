@@ -32,7 +32,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields=(
                 'id','title','ingredients',
-                'tags','time_miutes',
+                'tags','time_minutes',
                 'price','link'
             )
         '''This is done to make sure that the user just can't update the id field
@@ -44,4 +44,3 @@ class RecipeDetailSerializer(RecipeSerializer):
     '''Serialize the recipe details'''
     ingredients = IngredientSerializer(many=True,read_only=True)
     tags = TagSerializer(many=True,read_only=True)
-    
