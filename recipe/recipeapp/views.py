@@ -18,8 +18,15 @@ class RecipeAttr(viewsets.GenericViewSet,
 
     def get_queryset(self):
         '''Here is the custom filtering should be implemented'''
+        '''get the assigned only if assigned only is true in the path like url/?assigned_onluy=True'''
+        assigned_only = bool(self.request.query_params.get('assigned_only'))
+        queryset =self.queryset
+
+        if assigned_only:
+            queryset = queryset.filter(recipe__isnull=False)#reverse class can be accessed form django model using smaller first letter
+        
         '''get objects for the the currently auth user only'''
-        return self.queryset.filter(user=self.request.user).order_by('-name')
+        return queryset.filter(user=self.request.user).order_by('-name')
     
     def perform_create(self,serializer):
         '''Create a new ingridents'''
@@ -48,7 +55,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def _params_to_ints(self,qs):
         #convert a list of strings to a list integers
         '''string = 1,2,3 returns [1,2,3] pythonic way'''
-        retun [int(str_id) for str_id in qs.split(',')]
+        return [int(str_id) for str_id in qs.split(',')]
 
     def get_queryset(self):
         '''Retrive The specific filter query set'''
