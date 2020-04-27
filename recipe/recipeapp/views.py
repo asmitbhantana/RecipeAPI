@@ -37,6 +37,7 @@ class IngredientViewSet(RecipeAttr):
     serializer_class = serializers.IngredientSerializer
 
 
+
     
     
 
