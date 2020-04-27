@@ -44,7 +44,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
+    '''Private function for changing id to tags and ingredient'''
+    def _params_to_ints(self,qs):
+        #convert a list of strings to a list integers
+        '''string = 1,2,3 returns [1,2,3] pythonic way'''
+        retun [int(str_id) for str_id in qs.split(',')]
+
     def get_queryset(self):
+        '''Retrive The specific filter query set'''
+        tags = self.request.query_params.get('tags')
+        ingredients = self.request.query_params.get('ingredient')
+        queryset = self.queryset
+
+        if tags:
+            tag_ids = self._params_to_ints(tags)
+            queryset = queryset.filter(tags__id__in=tags_ids)#__ django syntax to filter foregin key
+        
+        if ingredients:
+            ingredient_ids = _params_to_ints(ingredients)
+            queryset = queryset.filter(ingredients__id__in=ingredient_ids)
+        
         '''Retrive the recipe for the user'''
         return self.queryset.filter(user=self.request.user)
 
@@ -54,7 +73,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return serializers.RecipeDetailSerializer
         elif self.action=='upload_image':
             return serializers.RecipeImageSerializer
-            
+
         return self.serializer_class
 
     def perform_create(self,serializer):
